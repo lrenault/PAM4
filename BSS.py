@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from scipy.io import wavfile
 from scipy.stats import kurtosis
 
-filename = 'mix.wav'
+filename = 'audios/mix.wav'
 sr_hz, x = wavfile.read(filename)
 
 T = sr_hz * 4
@@ -49,29 +49,29 @@ def relative_gradient_descend(X, epsilon=1e-3, learning_rate=1e-3):
     T = np.shape(X)[1]  # nbr of samples
     y = X               # source estimation
     k = kurtosis(y.transpose(), fisher=False)
-    
+
     grad = estimation_eq(y,k)
-    
+
     print(grad)
-    
+
     kompteur = 0
     while grad.all() > epsilon * np.ones((n,n)).all():
         H = grad
         print(type(H), type(y), type(learning_rate))
-        
+
         np.add(y, -learning_rate * np.dot(grad, y), out=y, casting="unsafe") # a+=b
-        
+
         k = kurtosis(y.transpose())
         grad = np.sum([H_phi(y[:,t], k) for t in range(T)], axis=0) / T
-        
+
         kompteur += 1
         if kompteur > 50:
             return y
-    
+
     return y
 #%%
 s_hat = relative_gradient_descend(X)
 #%%
-writeAudio("source1.wav", s_hat[0], sr_hz)
-writeAudio("source2.wav", s_hat[1], sr_hz)
-writeAudio("mono.wav", np.sum(s_hat, axis=0), sr_hz)
+writeAudio("audios/source1.wav", s_hat[0], sr_hz)
+writeAudio("audios/source2.wav", s_hat[1], sr_hz)
+writeAudio("audios/mono.wav", np.sum(s_hat, axis=0), sr_hz)
