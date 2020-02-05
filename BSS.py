@@ -9,9 +9,9 @@ sr_hz, x = wavfile.read(filename)
 
 T = sr_hz * 4
 n = 2                                   # nbr of sources
-X = np.asarray([x[:T, 0], x[:T, 1]])
+x = x[:T].transpose()
 
-#%% utils
+
 def writeAudio(name, y, sr_hz):
     normalized_data = np.int16(y/np.max(np.abs(y)) * 32767)
     wavfile.write(name, sr_hz, normalized_data)
@@ -44,33 +44,33 @@ def estimation_eq(y, k):
         H_hat += H_phi(y[:,t], k)
     return H_hat / T
 
-def relative_gradient_descend(X, epsilon=1e-3, learning_rate=1e-3):
+def relative_gradient_descend(x, epsilon=1e-3, learning_rate=1e-3):
     """Off-line implementation"""
-    T = np.shape(X)[1]  # nbr of samples
-    y = X               # source estimation
-    k = kurtosis(y.transpose(), fisher=False)
-
-    grad = estimation_eq(y,k)
-
-    print(grad)
-
+    # init
+    y = np.copy(x)               # source estimation
+    
+    # first compute
+    k = kurtosis(y.transpose())
+    H_hat = estimation_eq(y,k)
+    
+    # iterations
     kompteur = 0
-    while grad.all() > epsilon * np.ones((n,n)).all():
-        H = grad
-        print(type(H), type(y), type(learning_rate))
+    while H_hat.all() > epsilon * np.ones((n,n)).all():
+        H_hat = estimation_eq(y,k)
 
-        np.add(y, -learning_rate * np.dot(grad, y), out=y, casting="unsafe") # a+=b
-
+        #y -= learning_rate * np.dot(H_hat, y)
+        np.add(y, -learning_rate * np.dot(H_hat, y), out=y, casting="unsafe") # a+=b
         k = kurtosis(y.transpose())
-        grad = np.sum([H_phi(y[:,t], k) for t in range(T)], axis=0) / T
-
+        
+        # log and break
+        print(np.sum(H_hat), k)
         kompteur += 1
         if kompteur > 50:
             return y
 
     return y
 #%%
-s_hat = relative_gradient_descend(X)
+s_hat = relative_gradient_descend(x)
 #%%
 writeAudio("audios/source1.wav", s_hat[0], sr_hz)
 writeAudio("audios/source2.wav", s_hat[1], sr_hz)
