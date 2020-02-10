@@ -117,8 +117,8 @@ def relative_gradient_descend(x, epsilon=1e-3, learning_rate=5e-3):
 #%%
 s_hat = relative_gradient_descend(x)
 
-writeAudio("audios/originalL.wav", x[:,0], sr_hz)
-writeAudio("audios/originalR.wav", x[:,1], sr_hz)
-writeAudio("audios/source1.wav", s_hat[:,0], sr_hz)
-writeAudio("audios/source2.wav", s_hat[:,1], sr_hz)
-writeAudio("audios/mono.wav", np.sum(s_hat, axis=1), sr_hz)
+writeAudio("temp/originalL.wav", x[:,0], sr_hz)
+writeAudio("temp/originalR.wav", x[:,1], sr_hz)
+writeAudio("results/source1.wav", s_hat[:,0], sr_hz)
+writeAudio("results/source2.wav", s_hat[:,1], sr_hz)
+writeAudio("temp/mono.wav", np.sum(s_hat, axis=1), sr_hz)
