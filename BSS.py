@@ -1,10 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import wave
+import scipy.stats
+
+import librosa
 from scipy.io import wavfile
 from scipy.stats import kurtosis
 
-filename = 'audios/mix2.wav'
-sr_hz, x = wavfile.read(filename)
+filename = 'audios/prise4.wav'
+sr_hz, x = librosa.load(filename)
 
 T = sr_hz * 4
 n = 2                                   # nbr of sources
@@ -17,9 +21,9 @@ def writeAudio(name, y, sr_hz):
     wavfile.write(name, sr_hz, normalized_data)
     return normalized_data
 
-#%% algorithm
 def whiten(X, method='zca'):
     """
+    from https://gist.github.com/joelouismarino/ce239b5601fff2698895f48003f7464b
     Whitens the input matrix X using specified whitening method.
     Inputs:
         X:      Input data matrix with data examples along the first dimension
@@ -51,11 +55,12 @@ def whiten(X, method='zca'):
         raise Exception('Whitening method not found.')
 
     return np.dot(X_centered, W.T)
-#%% re-spatialize
-A = np.array([0.55, 0.45, 0.45, 0.55]).reshape((2,2))
-s_hat = (A@x.T).T
-writeAudio("audios/mix2.wav", s_hat, sr_hz)
 
+def repatialize(x, angle):
+    A = np.array([angle, 1 - angle, angle, 1 - angle]).reshape((2,2))
+    s_hat = (A@x.T).T
+    writeAudio("audios/mix2.wav", s_hat, sr_hz)
+    return s_hat
 
 #%% Cardoso ver.
 def phi(s, k):
@@ -78,7 +83,7 @@ def estimation_eq(y, k):
     T = y.shape[0]
     H_hat = np.zeros((n,n))
     for t in range(T):
-        H_hat += H_phi_o(y[t], k)
+        H_hat += H_phi(y[t], k)
     return H_hat / T
 
 def relative_gradient_descend(x, epsilon=1e-3, learning_rate=5e-3):
@@ -97,17 +102,13 @@ def relative_gradient_descend(x, epsilon=1e-3, learning_rate=5e-3):
         H_hat = estimation_eq(y,k)
 
         y -= learning_rate * (H_hat@y.T).T
-        #np.add(y, -learning_rate * np.dot(H_hat, y), out=y, casting="unsafe") # a+=b
         k = kurtosis(y)
         
         # log and break
-        loss.append(np.sum(H_hat))
-        if kompteur > 3 and loss[-1] > loss[-2]:
-            break
-        
         print(H_hat)
         kompteur += 1
-        if kompteur > 100:
+        loss.append(np.sum(H_hat))
+        if (kompteur > 3 and loss[-1] > loss[-2]) or kompteur > 200:
             break
         
     plt.plot(loss)
@@ -115,7 +116,7 @@ def relative_gradient_descend(x, epsilon=1e-3, learning_rate=5e-3):
     return y
 #%%
 s_hat = relative_gradient_descend(x)
-#%%
+
 writeAudio("audios/originalL.wav", x[:,0], sr_hz)
 writeAudio("audios/originalR.wav", x[:,1], sr_hz)
 writeAudio("audios/source1.wav", s_hat[:,0], sr_hz)
