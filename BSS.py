@@ -7,8 +7,22 @@ import librosa
 from scipy.io import wavfile
 from scipy.stats import kurtosis
 
-filename = 'audios/prise4.wav'
-sr_hz, x = librosa.load(filename)
+def writeAudio(name, y, sr_hz):
+    normalized_data = np.int16(y/np.max(np.abs(y)) * 32767)
+    wavfile.write(name, sr_hz, normalized_data)
+    return normalized_data
+
+sr_hz, x0 = wavfile.read('results/overNMF/0_EstimatedSource.wav')
+sr_hz, x1 = wavfile.read('results/overNMF/1_EstimatedSource.wav')
+sr_hz, x2 = wavfile.read('results/overNMF/2_EstimatedSource.wav')
+#sr_hz, x3 = wavfile.read('results/overNMF/3_EstimatedSource.wav')
+sr_hz, x4 = wavfile.read('results/overNMF/4_EstimatedSource.wav')
+sr_hz, x5 = wavfile.read('results/overNMF/5_EstimatedSource.wav')
+sr_hz, x6 = wavfile.read('results/overNMF/6_EstimatedSource.wav')
+sr_hz, x7 = wavfile.read('results/overNMF/7_EstimatedSource.wav')
+
+writeAudio("results/overNMF/overNMF_EstimatedSource_4_5_6.wav", x4 + x5 + x6, sr_hz)
+#%%
 
 T = sr_hz * 4
 n = 2                                   # nbr of sources

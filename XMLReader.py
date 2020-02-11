@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import xml.etree.ElementTree as ET
 
-filename = 'results/sources.xml'
+filename = 'temp/sources.xml'
 
 ex_params = ['Wex', 'Uex', 'Gex', 'Hex']
 ft_params = ['Wft', 'Uft', 'Gft', 'Hft']
@@ -102,11 +102,11 @@ def plot_params(source, params, ex_ft):
     U_data = source[params[1]]['data']
     G_data = source[params[2]]['data']
     H_data = source[params[3]]['data']
+    
+    E_data = np.dot(W_data, U_data)
+    P_data = np.dot(G_data, H_data)
 
-    P_data = G_data@H_data
-    E_data = W_data@U_data
-
-    V_data = E_data@P_data
+    V_data = np.dot(E_data, P_data)
 
     fig, ((ax1, ax2, ax3, H), (ax5, ax6, G, P), (ax9, U, ax11, ax12), (W, E, ax15, V)) = plt.subplots(4,4,figsize=(20,20))
     fig.suptitle(source['name'] + ex_ft)
@@ -128,11 +128,18 @@ def plot_params(source, params, ex_ft):
     V.set_title('V_'+ ex_ft)
 
     plt.show()
+    
+    
     return fig
 
 for source in data['sources']:
     name = source['name']
     A = source['A']['data']
-
-    plot_params(source, ex_params, 'ex')
-    plot_params(source, ft_params, 'ft')
+    
+    plt.imshow(source['Wex']['data'])
+    plt.plot()
+    plt.imshow(source['Hex']['data'], figsize=(20,20))
+    plt.show()
+    
+    plot_params(source, ex_params, '_ex')
+    #plot_params(source, ft_params, '_ft')
