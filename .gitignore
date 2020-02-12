@@ -139,3 +139,5 @@ Thumbs.db
 
 # User-specific configurations
 /audios/*
+/temp/*
+/results/*
