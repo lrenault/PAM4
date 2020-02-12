@@ -111,13 +111,13 @@ def plot_params(source, params, ex_ft):
     fig, ((ax1, ax2, ax3, H), (ax5, ax6, G, P), (ax9, U, ax11, ax12), (W, E, ax15, V)) = plt.subplots(4,4,figsize=(20,20))
     fig.suptitle(source['name'] + ex_ft)
 
-    H.imshow(H_data)
-    G.imshow(G_data)
-    P.imshow(P_data)
-    U.imshow(U_data)
-    W.imshow(W_data)
-    E.imshow(E_data)
-    V.imshow(V_data)
+    H.imshow(H_data, origin='lower')
+    G.imshow(G_data, origin='lower')
+    P.imshow(P_data, origin='lower')
+    U.imshow(U_data, origin='lower')
+    W.imshow(W_data, origin='lower')
+    E.imshow(E_data, origin='lower')
+    V.imshow(V_data, origin='lower')
 
     H.set_title('H_'+ ex_ft)
     G.set_title('G_'+ ex_ft)
@@ -136,9 +136,9 @@ for source in data['sources']:
     name = source['name']
     A = source['A']['data']
     
-    plt.imshow(source['Wex']['data'])
+    plt.imshow(np.log(source['Wex']['data']))
     plt.plot()
-    plt.imshow(source['Hex']['data'], figsize=(20,20))
+    plt.imshow(source['Hex']['data'])
     plt.show()
     
     plot_params(source, ex_params, '_ex')
