@@ -19,7 +19,7 @@ def voice(j, N, nbin, pan=0):
 
     # Name of output audio file for source j
     source['name'] = {}
-    source['name'] = str(j) + 'EstimatedVoice'
+    source['name'] = str(j) + '_EstimatedVoice'
 
     # Spatial model
     source['A'] = {}
@@ -38,8 +38,8 @@ def voice(j, N, nbin, pan=0):
     source['Uex']['data'] = 0.75 * abs(np.random.randn(L, K)) + 0.25 * np.ones((L, K))
 
     source['Gex'] = {}
-    source['Gex']['adaptability'] = 'fixed'
-    source['Gex']['data'] = np.eye((K, M)) # GSMM model for monophonic
+    source['Gex']['adaptability'] = 'GSMM'
+    source['Gex']['data'] = patterns.G_HMM(K, M)
 
     source['Hex'] = {}
     source['Hex']['data'] = 0.75 * abs(np.random.randn(M, N)) + 0.25 * np.ones((M, N))
@@ -123,7 +123,7 @@ def piano(j, N, nbin, pan=0):
 
     # Name of output audio file for source j
     source['name'] = {}
-    source['name'] = str(j) + 'EstimatedPiano'
+    source['name'] = str(j) + '_EstimatedPiano'
 
     # Spatial model
     source['A'] = {}
@@ -176,7 +176,7 @@ def trumpet(j, N, nbin, pan=0):
 
     # Name of output audio file for source j
     source['name'] = {}
-    source['name'] = str(j) + 'EstimatedVoice'
+    source['name'] = str(j) + '_EstimatedVoice'
 
     # Spatial model
     source['A'] = {}
@@ -196,7 +196,7 @@ def trumpet(j, N, nbin, pan=0):
 
     source['Gex'] = {}
     source['Gex']['adaptability'] = 'fixed'
-    source['Gex']['data'] = np.eye((K, M)) # GSMM model for monophonic
+    source['Gex']['data'] = np.eye(K, M) # GSMM model for monophonic
 
     source['Hex'] = {}
     source['Hex']['data'] = 0.75 * abs(np.random.randn(M, N)) + 0.25 * np.ones((M, N))
@@ -223,13 +223,13 @@ def saxophone(j, N, nbin, pan=0):
     """
 
     source = {}
-    K = 20 # number of activation patterns
-    L = 50 # pitch range
-    M = 2 * N
-
+    L = 40 # pitch range
+    K = 40 # number of activation patterns
+    M = int(2 * N)
+    
     # Name of output audio file for source j
     source['name'] = {}
-    source['name'] = str(j) + 'EstimatedSaxophone'
+    source['name'] = str(j) + '_EstimatedSaxophone'
 
     # Spatial model
     source['A'] = {}
@@ -248,8 +248,8 @@ def saxophone(j, N, nbin, pan=0):
     source['Uex']['data'] = 0.75 * abs(np.random.randn(L, K)) + 0.25 * np.ones((L, K))
 
     source['Gex'] = {}
-    source['Gex']['adaptability'] = 'fixed'
-    source['Gex']['data'] = np.eye((K, M)) # GSMM model for monophonic
+    source['Gex']['adaptability'] = 'GSMM'
+    source['Gex']['data'] = patterns.G_HMM(K, M)
 
     source['Hex'] = {}
     source['Hex']['data'] = 0.75 * abs(np.random.randn(M, N)) + 0.25 * np.ones((M, N))
@@ -281,7 +281,7 @@ def drums(j, N, nbin, pan=0):
 
     # Name of output audio file for source j
     source['name'] = {}
-    source['name'] = str(j) + 'EstimatedDrums'
+    source['name'] = str(j) + '_EstimatedDrums'
 
     # Spatial model
     source['A'] = {}

@@ -102,44 +102,55 @@ def plot_params(source, params, ex_ft):
     U_data = source[params[1]]['data']
     G_data = source[params[2]]['data']
     H_data = source[params[3]]['data']
-    
+
     E_data = np.dot(W_data, U_data)
     P_data = np.dot(G_data, H_data)
 
     V_data = np.dot(E_data, P_data)
 
-    fig, ((ax1, ax2, ax3, H), (ax5, ax6, G, P), (ax9, U, ax11, ax12), (W, E, ax15, V)) = plt.subplots(4,4,figsize=(20,20))
-    fig.suptitle(source['name'] + ex_ft)
-
-    H.imshow(H_data, origin='lower')
-    G.imshow(G_data, origin='lower')
-    P.imshow(P_data, origin='lower')
-    U.imshow(U_data, origin='lower')
-    W.imshow(W_data, origin='lower')
-    E.imshow(E_data, origin='lower')
-    V.imshow(V_data, origin='lower')
-
-    H.set_title('H_'+ ex_ft)
-    G.set_title('G_'+ ex_ft)
-    P.set_title('P_'+ ex_ft)
-    U.set_title('U_'+ ex_ft)
-    W.set_title('W_'+ ex_ft)
-    E.set_title('E_'+ ex_ft)
-    V.set_title('V_'+ ex_ft)
-
+    plt.figure(figsize=(20,20))
+    
+    plt.subplot(4,4,4)
+    plt.imshow(H_data, origin='lower')
+    plt.set_title('H_'+ ex_ft)
+    
+    plt.subplot(4,4,7)
+    plt.imshow(G_data, origin='lower')
+    plt.set_title('G_'+ ex_ft)
+    
+    plt.subplot(4,4,8)
+    plt.imshow(P_data, origin='lower')
+    plt.set_title('P_'+ ex_ft)
+    
+    plt.subplot(4,4,10)
+    plt.imshow(U_data, origin='lower')
+    plt.set_title('U_'+ ex_ft)
+    
+    plt.subplot(4,4,13)
+    plt.imshow(W_data, origin='lower')
+    plt.set_title('W_'+ ex_ft)
+    
+    plt.subplot(4,4,14)
+    plt.imshow(E_data, origin='lower')
+    plt.set_title('E_'+ ex_ft)
+    
+    plt.subplot(4,4,16)
+    plt.imshow(V_data, origin='lower')
+    plt.set_title('V_'+ ex_ft)
+    
     plt.show()
-    
-    
-    return fig
+
+
+    return None
 
 for source in data['sources']:
     name = source['name']
     A = source['A']['data']
-    
-    plt.imshow(np.log(source['Wex']['data']))
+
+    plt.imshow(np.log(source['Gex']['data']))
     plt.plot()
-    plt.imshow(source['Hex']['data'])
-    plt.show()
-    
+    #plt.imshow(source['Hex']['data'])
+    #plt.show()
+
     plot_params(source, ex_params, '_ex')
     #plot_params(source, ft_params, '_ft')

@@ -24,7 +24,9 @@ def G_HMM(K, M):
     Args:
         - K (int):
     """
-    return None
+    G = np.zeros((K,M))
+    G[0] = 1
+    return G
 
 plt.imshow(H_attack_decay(180, 80))
 plt.title("H_ex for non-sustained sources")
